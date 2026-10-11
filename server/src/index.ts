@@ -6,7 +6,6 @@ import { GoogleGenAI } from "@google/genai";
 dotenv.config();
 
 const app = express();
-const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -14,7 +13,7 @@ app.use(express.json());
 const apiKey = process.env.GEMINI_API_KEY;
 
 if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is missing from the .env file");
+  throw new Error("GEMINI_API_KEY is missing from the environment variables");
 }
 
 const ai = new GoogleGenAI({ apiKey });
@@ -65,6 +64,12 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`ASPRAT AI server running at http://localhost:${PORT}`);
-});
+export default app;
+
+if (process.env.NODE_ENV !== "production") {
+  const PORT = Number(process.env.PORT) || 5000;
+
+  app.listen(PORT, () => {
+    console.log(`ASPRAT AI server running at http://localhost:${PORT}`);
+  });
+}
